@@ -10,5 +10,5 @@
 **Data tier:** 
   SQLite database acts as the data tier, which stores the data used by the application.
 
-*** What is Flask? *** 
+***What is Flask?*** 
   
