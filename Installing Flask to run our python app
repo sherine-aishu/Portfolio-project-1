@@ -1,0 +1,50 @@
+
+# Installing pip
+/home/ec2-user/venv/bin/python -m pip install --upgrade pip
+
+# Installing flask
+pip install Flask
+pip list|grep -i 'flask'
+
+# Creating our python application using flask
+mkdir app
+cd app/
+vi app.py
+
+******************************************************************************************************************************
+from flask import Flask, request, render_template_string
+
+app = Flask(__name__)
+
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    if request.method == 'POST':
+        user_input = request.form['user_input']
+        return render_template_string('''
+            <p>Hello, welcome to this app</p>
+            <form method="post">
+                <input type="text" name="user_input" />
+                <input type="submit" value="OK" />
+            </form>
+            <h2>Thank you, we received your response</h2>
+        ''', user_input=user_input)
+    return render_template_string('''
+        <p>Hello, welcome to this app</p>
+        <form method="post">
+            <input type="text" name="user_input" />
+            <input type="submit" value="OK" />
+        </form>
+    ''')
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=80)
+******************************************************************************************************************************
+
+# Start your python application using flask
+(FLASK_APP=app.py flask run --host=0.0.0.0 / flask defaults to port 5000
+if you want to use the default port specified in app.py i.e 80, then modify the command to)
+
+FLASK_APP=app.py flask run --host=0.0.0.0 --port=80
+
+Note: The above steps is used to run a flask app and access the same using the default dev server provided by flask.
+
