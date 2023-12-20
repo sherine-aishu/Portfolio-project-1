@@ -10,5 +10,12 @@
 **Data tier:** 
   SQLite database acts as the data tier, which stores the data used by the application.
 
-***<small>What is Flask?</small>***
+***What is Flask?***
+Flask is a python webframework used to build simple and medium python web applications.
+
+***What is NGINX?***
+Nginx is a web server which can be used as a reverse proxy.
+
+***What is uWSGI?***
+uWSGI which is named after Web Server Gateway Interface can be used as a application server.
   
