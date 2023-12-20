@@ -24,3 +24,9 @@ systemctl stop uwsgi.service
 
 As discussed above, we are going to start/stop uwsgi manually using "uwsgi --ini app.ini"
 
+
+Note:
+which uwsgi (ExecStart)
+/home/ec2-user/venv/bin/uwsgi
+echo $PATH (Environment)
+/home/ec2-user/venv/bin:/root/.local/bin:/root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/var/lib/snapd/snap/bin
