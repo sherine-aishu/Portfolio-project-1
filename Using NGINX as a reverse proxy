@@ -52,11 +52,15 @@ systemctl restart nginx
 sudo systemctl status nginx
 
 # Providing permissions to directories
-chmod 777 / , home , ec2-user , app 
+cd / 
+chmod 777 /home/
+chmod 777 /home/ec2-user/ 
+chmod 777 /home/ec2-user/app/ 
 touch app.sock
 chmod 777 app.sock
 
 # Starting the application
 uwsgi --ini /home/ec2-user/app/app.ini (make sure you are in app dir)
 
+Note: No changes are required in app.py file
 
