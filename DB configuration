@@ -1,13 +1,13 @@
-Note: No changes are required in app.py
+This documentation will explain how to configure the sqlite database to store the user data from application.  
 
-DB config
+Sqlite is a light weight database engine.
 
-Create app.sock with perm
+# Install sqlite
+sudo yum install sqlite
 
-DB configuration
+# Modify the app.py file to include database configuration
 
-Step 1: Modify the app.py file
-
+************************************************************************************************************************
 from flask import Flask, request, render_template_string, g
 import sqlite3
 
@@ -53,50 +53,59 @@ if __name__ == '__main__':
         init_db()
     app.run(host='0.0.0.0', port=80)
 
+************************************************************************************************************************
 
-Step 2: Create the schema.sql file
-schema.sql 
+When the script runs, it will connect the application to the database(get_db) and then creates a tables based on schema.sql as defined in init_db.
 
+Then, based on request if its POST then the user input will be inserted into the table as per 'insert' command.
+
+
+# Create the schema.sql file
+vi schema.sql 
+
+************************************************************************************************************************
 CREATE TABLE IF NOT EXISTS user_input (
     id INTEGER PRIMARY KEY,
     input TEXT NOT NULL
 );
+************************************************************************************************************************
 
 
-Step 3: Initialize the database
-
+# Initialize the database
 You can do this in the Python shell:
 
+************************************************************************************************************************
 from app import init_db
 init_db()
+************************************************************************************************************************
 
+In command line enter 'python' to get into python shell
 >>>from app import init_db
 >>>init_db() 
 
 
+# Restart NGINX and start the application
+sudo systemctl status nginx
+sudo systemctl restart nginx
+sudo systemctl status nginx
+uwsgi --ini /home/ec2-user/app/app.ini
 
-DB queries
 
-sudo yum install sqlite
+# Access your application
+Access your application via browser and make some entry.
 
-restart your Nginx 
-app using the command uwsgi --ini /home/ec2-user/app/app.ini
 
-Login to the database: 
-
+# Login to the database and execute few db queries
+Login to DB:
 sqlite3 database.db, 
-
-below command to list all tables in the database:
-
+List all tables in the database:
 .tables 
-
-.schema user_input command to view the structure of a table
-
+View the structure of a table:
+.schema user_input
 View data in tables: 
-
 Use the SELECT * FROM user_input; 
-
- .quit command or press Ctrl+D to exit the SQLite command-line 
+Exit the SQLite command-line: 
+.quit command or press Ctrl+D to 
 
 
 
