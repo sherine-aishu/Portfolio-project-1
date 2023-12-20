@@ -1,0 +1,16 @@
+# Instance login and update (In this example we have considered using an aws redhat ec2-instance)
+ssh -i 'test.pem' ec2-user@public-ip
+sudo su
+yum update -y
+
+# Installing python
+yum install python -y
+python --version
+
+# Creating a virtual environment for python
+sudo yum install python3-virtualenv
+python3 -m virtualenv venv
+
+# Activating the virtual environment
+source venv/bin/activate
+
