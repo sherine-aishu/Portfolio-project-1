@@ -1,0 +1,280 @@
+# Instance login and update (In this example we have considered using an aws redhat ec2-instance)
+ssh -i 'test.pem' ec2-user@public-ip
+sudo su
+yum update -y
+
+# Installing python
+yum install python -y
+python --version
+
+# Creating a virtual environment for python
+sudo yum install python3-virtualenv
+python3 -m virtualenv venv
+
+# Activating the virtual environment
+source venv/bin/activate
+
+# Installing pip
+/home/ec2-user/venv/bin/python -m pip install --upgrade pip
+
+# Installing flask
+pip install Flask
+pip list|grep -i 'flask'
+
+# Creating our python application using flask
+mkdir app
+cd app/
+vi app.py
+
+******************************************************************************************************************************
+from flask import Flask, request, render_template_string
+
+app = Flask(__name__)
+
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    if request.method == 'POST':
+        user_input = request.form['user_input']
+        return render_template_string('''
+            <p>Hello, welcome to this app</p>
+            <form method="post">
+                <input type="text" name="user_input" />
+                <input type="submit" value="OK" />
+            </form>
+            <h2>Thank you, we received your response</h2>
+        ''', user_input=user_input)
+    return render_template_string('''
+        <p>Hello, welcome to this app</p>
+        <form method="post">
+            <input type="text" name="user_input" />
+            <input type="submit" value="OK" />
+        </form>
+    ''')
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=80)
+******************************************************************************************************************************
+
+# Start your python application using flask
+(FLASK_APP=app.py flask run --host=0.0.0.0 / flask defaults to port 5000
+if you want to use the default port specified in app.py i.e 80, then modify the command to)
+FLASK_APP=app.py flask run --host=0.0.0.0 --port=80
+The above steps is used to run a flask app and access the same using the default dev server provided by flask.
+
+pip install wheel
+pip install --upgrade setuptools pip
+sudo yum groupinstall 'Development Tools'
+sudo yum install python3-devel
+find / -name setup.py
+python /root/.local/share/virtualenv/wheel/3.9/image/1/CopyPipInstall/setuptools-59.6.0-py3-none-any/pkg_resources/tests/data/my-test-package-source/setup.py bdist_wheel
+pip install uwsgi
+vi app.ini
+
+[uwsgi]
+module = app:app
+master = true
+processes = 5
+http = :80
+pidfile = /tmp/uwsgi.pid
+vacuum = true
+die-on-term = true
+
+
+vi /etc/systemd/system/uwsgi.service
+[Unit]
+Description=uWSGI service
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/home/ec2-user/app
+Environment="PATH=/home/ec2-user/venv/bin"
+ExecStart=/home/ec2-user/venv/bin/uwsgi --ini /home/ec2-user/app/app.ini
+
+[Install]
+WantedBy=multi-user.target
+
+uwsgi --ini app.ini
+The above steps is used to run a flask app and access the same using the default dev server provided by flask.
+No change in app.py
+
+nginx configuration commands
+ > app.ini
+   vi app.ini
+
+cat app.ini
+[uwsgi]
+module = app:app
+master = true
+processes = 5
+socket = /home/ec2-user/app/app.sock
+chmod-socket = 666
+vacuum = true
+die-on-term = true
+
+
+  yum install nginx
+  nginx -v
+  125  systemctl status nginx
+  126  sudo systemctl start nginx
+  127  sudo systemctl enable nginx
+  128  sudo yum install firewalld
+  129  sudo systemctl start firewalld
+  132  sudo firewall-cmd --permanent --add-port=80/tcp
+  133  sudo firewall-cmd --permanent --add-port=443/tcp
+  134  sudo firewall-cmd --reload
+       vi /etc/nginx/nginx.conf
+			    server {
+            listen 80;
+            server_name 18.224.40.52;
+
+            location / {
+              include uwsgi_params;
+              uwsgi_pass unix:/home/ec2-user/app/app.sock;
+            }
+    }
+124  sudo nginx -t
+  135  systemctl reload nginx
+  135  systemctl restart nginx
+  136  sudo systemctl status nginx
+  149  chmod 777 / , home , ec2-user , app 
+  158  touch app.sock
+  159  chmod 777 app.sock
+  161  uwsgi --ini /home/ec2-user/app/app.ini (make sure u r in app dir)
+
+No need to make any changes in app.py
+
+DB config
+
+Create app.sock with perm
+
+DB configuration
+
+Step 1: Modify the app.py file
+
+from flask import Flask, request, render_template_string, g
+import sqlite3
+
+app = Flask(__name__)
+
+def get_db():
+    if 'db' not in g:
+        g.db = sqlite3.connect('database.db')
+        g.db.row_factory = sqlite3.Row
+    return g.db
+
+def init_db():
+    with app.app_context():
+        db = get_db()
+        with app.open_resource('schema.sql') as f:
+            db.executescript(f.read().decode('utf8'))
+
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    if request.method == 'POST':
+        user_input = request.form['user_input']
+        db = get_db()
+        db.execute('INSERT INTO user_input (input) VALUES (?)', (user_input,))
+        db.commit()
+        return render_template_string('''
+            <p>Hello, welcome to this app</p>
+            <form method="post">
+                <input type="text" name="user_input" />
+                <input type="submit" value="OK" />
+            </form>
+            <h2>You entered: {{ user_input }}</h2>
+        ''', user_input=user_input)
+    return render_template_string('''
+        <p>Hello, welcome to this app</p>
+        <form method="post">
+            <input type="text" name="user_input" />
+            <input type="submit" value="OK" />
+        </form>
+    ''')
+
+if __name__ == '__main__':
+    with app.app_context():
+        init_db()
+    app.run(host='0.0.0.0', port=80)
+
+
+Step 2: Create the schema.sql file
+schema.sql 
+
+CREATE TABLE IF NOT EXISTS user_input (
+    id INTEGER PRIMARY KEY,
+    input TEXT NOT NULL
+);
+
+
+Step 3: Initialize the database
+
+You can do this in the Python shell:
+
+from app import init_db
+init_db()
+
+>>>from app import init_db
+>>>init_db() 
+
+
+
+DB queries
+
+sudo yum install sqlite
+
+restart your Nginx 
+app using the command uwsgi --ini /home/ec2-user/app/app.ini
+
+Login to the database: 
+
+sqlite3 database.db, 
+
+below command to list all tables in the database:
+
+.tables 
+
+.schema user_input command to view the structure of a table
+
+View data in tables: 
+
+Use the SELECT * FROM user_input; 
+
+ .quit command or press Ctrl+D to exit the SQLite command-line 
+
+
+
+
+
+
+
+
+
+
+hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+
+
+(venv) [root@ip-172-31-10-134 app]# which uwsgi
+/home/ec2-user/venv/bin/uwsgi
+(venv) [root@ip-172-31-10-134 app]# echo $PATH
+/home/ec2-user/venv/bin:/root/.local/bin:/root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/var/lib/snapd/snap/bin
+(venv) [root@ip-172-31-10-134 app]#
+
+
+cat /etc/systemd/system/uwsgi.service
+[Unit]
+Description=uWSGI service
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/home/ec2-user/app
+Environment="PATH=/home/ec2-user/venv/bin"
+ExecStart=/home/ec2-user/venv/bin/uwsgi --ini /home/ec2-user/app/app.ini
+
+[Install]
+WantedBy=multi-user.target
+(venv) [root@ip-172-31-10-134 app]# which uwsgi
+
