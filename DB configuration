@@ -107,38 +107,3 @@ Use the SELECT * FROM user_input;
 Exit the SQLite command-line: 
 .quit command or press Ctrl+D to 
 
-
-
-
-
-
-
-
-
-
-hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
-
-
-(venv) [root@ip-172-31-10-134 app]# which uwsgi
-/home/ec2-user/venv/bin/uwsgi
-(venv) [root@ip-172-31-10-134 app]# echo $PATH
-/home/ec2-user/venv/bin:/root/.local/bin:/root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/var/lib/snapd/snap/bin
-(venv) [root@ip-172-31-10-134 app]#
-
-
-cat /etc/systemd/system/uwsgi.service
-[Unit]
-Description=uWSGI service
-After=network.target
-
-[Service]
-User=root
-Group=root
-WorkingDirectory=/home/ec2-user/app
-Environment="PATH=/home/ec2-user/venv/bin"
-ExecStart=/home/ec2-user/venv/bin/uwsgi --ini /home/ec2-user/app/app.ini
-
-[Install]
-WantedBy=multi-user.target
-(venv) [root@ip-172-31-10-134 app]# which uwsgi
-
