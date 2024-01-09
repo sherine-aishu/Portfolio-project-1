@@ -1,5 +1,6 @@
-# Installing uwsgi
-cd /app/
+# Installing uwsgi 
+Note: The app folder is inside /home/ec2-user/
+cd app/
 pip install wheel
 pip install --upgrade setuptools pip
 sudo yum groupinstall 'Development Tools'
