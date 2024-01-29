@@ -23,15 +23,15 @@ uWSGI which is named after Web Server Gateway Interface can be used as a applica
 Using a virtual environment is recommended as it provides Isolation, helps in dependency management and enables us to have  clean environment and also suitable for development and testing.
 
 
-Step 1: Setting up python virtual environment
-
-Step 2: Installing Flask to run our python app
-
-Step 3: Using uWSGI to run your python app - manual
-
-Step 4: Using uWSGI as a service to run your application (not required)
-
-Step 5: Using NGINX as a reverse proxy
-
-Step 6: DB configuration
+          Step 1: Setting up python virtual environment
+          
+          Step 2: Installing Flask to run our python app
+          
+          Step 3: Using uWSGI to run your python app - manual
+          
+          Step 4: Using uWSGI as a service to run your application (not required)
+          
+          Step 5: Using NGINX as a reverse proxy
+          
+          Step 6: DB configuration
   
