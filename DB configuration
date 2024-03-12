@@ -97,7 +97,7 @@ Access your application via browser and make some entry.
 
 # Login to the database and execute few db queries
 Login to DB:
-sqlite3 database.db, 
+sqlite3 database.db 
 List all tables in the database:
 .tables 
 View the structure of a table:
