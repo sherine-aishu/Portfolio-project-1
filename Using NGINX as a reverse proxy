@@ -10,7 +10,10 @@ module = app:app
 master = true
 processes = 5
 socket = /home/ec2-user/app/app.sock
-chmod-socket = 666
+uid = ec2-user
+gid = nginx
+chmod-socket = 660
+chown-socket = ec2-user:nginx
 vacuum = true
 die-on-term = true
 *************************************************************************************************************************
