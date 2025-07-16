@@ -59,9 +59,9 @@ getenforce
 If it returns Enforcing, try:
 sudo setenforce 0
 
-
 # Providing permissions to directories
-
+sudo chown ec2-user:nginx /home/ec2-user/app
+sudo chmod 770 /home/ec2-user/app
 
 # Starting the application
 uwsgi --ini /home/ec2-user/app/app.ini (make sure you are in app dir)
