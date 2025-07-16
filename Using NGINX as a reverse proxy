@@ -10,7 +10,10 @@ module = app:app
 master = true
 processes = 5
 socket = /home/ec2-user/app/app.sock
-chmod-socket = 666
+uid = ec2-user
+gid = nginx
+chmod-socket = 660
+chown-socket = ec2-user:nginx
 vacuum = true
 die-on-term = true
 *************************************************************************************************************************
@@ -51,16 +54,19 @@ systemctl reload nginx
 systemctl restart nginx
 sudo systemctl status nginx
 
+# Check SELinux
+getenforce
+If it returns Enforcing, try:
+sudo setenforce 0
+
+
 # Providing permissions to directories
-cd / 
-chmod 777 /home/
-chmod 777 /home/ec2-user/ 
-chmod 777 /home/ec2-user/app/ 
-touch app.sock
-chmod 777 app.sock
+
 
 # Starting the application
 uwsgi --ini /home/ec2-user/app/app.ini (make sure you are in app dir)
 
-Note: No changes are required in app.py file
+Note: 
+No changes are required in app.py file
+18.224.40.52 is the public ip of the instance
 
