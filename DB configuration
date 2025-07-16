@@ -83,6 +83,9 @@ In command line enter 'python' to get into python shell
 >>>from app import init_db
 >>>init_db() 
 
+# Setting up permissions for database
+sudo chown ec2-user:nginx /home/ec2-user/app/database.db
+sudo chmod 660 /home/ec2-user/app/database.db
 
 # Restart NGINX and start the application
 sudo systemctl status nginx
