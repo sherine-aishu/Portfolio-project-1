@@ -54,16 +54,24 @@ systemctl reload nginx
 systemctl restart nginx
 sudo systemctl status nginx
 
+# Check SELinux
+getenforce
+If it returns Enforcing, try:
+sudo setenforce 0
+
 # Providing permissions to directories
-cd / 
-chmod 777 /home/
-chmod 777 /home/ec2-user/ 
-chmod 777 /home/ec2-user/app/ 
-touch app.sock
-chmod 777 app.sock
+cd /
+sudo chmod 750 /home/ec2-user	
+sudo chown ec2-user:nginx /home/ec2-user
+chown -R ec2-user:nginx /home/ec2-user/app
+sudo chown ec2-user:nginx /home/ec2-user/app
+sudo chmod 770 /home/ec2-user/app
 
 # Starting the application
+cd /home/ec2-user/app
 uwsgi --ini /home/ec2-user/app/app.ini (make sure you are in app dir)
 
-Note: No changes are required in app.py file
+Note: 
+No changes are required in app.py file
+18.224.40.52 is the public ip of the instance
 
